@@ -1,147 +1,424 @@
+// import { useState } from "react";
 // import {
 //   Box,
 //   Card,
 //   CardContent,
 //   Typography,
-//   TextField,
-//   Button,
-//   Grid,
 //   Avatar,
+//   Button,
+//   Divider,
+//   Stack,
+//   Chip,
 // } from "@mui/material";
 
-// function Profile() {
+// import {
+//   Edit,
+//   Email,
+//   Phone,
+//   School,
+//   Description,
+//   Visibility,
+// } from "@mui/icons-material";
+
+// import EditProfileDialog from "./EditProfileDialog";
+
+// const Profile = () => {
+//   const loggedUser = JSON.parse(
+//     localStorage.getItem("loggedUser")
+//   );
+
+//   const [profile, setProfile] = useState({
+//     profileImage: "",
+//     name: loggedUser?.name || "Student Name",
+//     email: loggedUser?.email || "student@gmail.com",
+//     number: "9876543210",
+//     qualification: "MCA",
+    
+//     cgpa: "8.10",
+//     tenth: "85%",
+//     twelfth: "82%",
+
+//     graduation: {
+//       college: "Siliguri Institute of Technology",
+//       university: "MAKAUT",
+//       cgpa: "8.10",
+//     },
+
+//     postGraduation: {
+//       college: "Techno Main Salt Lake",
+//       university: "MAKAUT",
+//       cgpa: "8.20",
+//     },
+
+//     resume: null,
+//   });
+
+//   const [openEdit, setOpenEdit] = useState(false);
+
+//   const handleSave = (updatedProfile) => {
+//     setProfile(updatedProfile);
+//     setOpenEdit(false);
+//   };
+
+//   const viewResume = () => {
+//     if (!profile.resume) {
+//       alert("Resume not uploaded yet.");
+//       return;
+//     }
+
+//     const resumeUrl = URL.createObjectURL(profile.resume);
+//     window.open(resumeUrl, "_blank");
+//   };
+
+//   const viewStudentDetails = () => {
+//     alert(
+//       `Student Details
+
+// Name: ${profile.name}
+// Email: ${profile.email}
+// Phone: ${profile.number}
+// Qualification: ${profile.qualification}
+// CGPA: ${profile.cgpa}
+// 10th: ${profile.tenth}
+// 12th: ${profile.twelfth}`
+//     );
+//   };
+
 //   return (
 //     <Box>
-//       <Typography variant="h4" fontWeight="bold" mb={1}>
-//         My Profile
-//       </Typography>
+//       {/* Page Header */}
+//       <Box
+//         sx={{
+//           display: "flex",
+//           justifyContent: "space-between",
+//           alignItems: "center",
+//           mb: 3,
+//         }}
+//       >
+//         <Box>
+//           <Typography variant="h4" fontWeight="700">
+//             My Profile
+//           </Typography>
 
-//       <Typography color="text.secondary" mb={3}>
-//         Manage your personal, academic and professional information.
-//       </Typography>
+//           <Typography color="text.secondary" sx={{ mt: 1 }}>
+//             Manage your placement profile and academic details.
+//           </Typography>
+//         </Box>
 
-//       <Card sx={{ borderRadius: 3 }}>
+//         <Button
+//           variant="contained"
+//           startIcon={<Edit />}
+//           onClick={() => setOpenEdit(true)}
+//         >
+//           Edit Profile
+//         </Button>
+//       </Box>
+
+//       {/* Profile Card */}
+//       <Card
+//         sx={{
+//           borderRadius: 3,
+//           boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+//         }}
+//       >
 //         <CardContent sx={{ p: 4 }}>
+//           {/* Profile Top */}
 //           <Box
-//             display="flex"
-//             alignItems="center"
-//             gap={2}
-//             mb={4}
+//             sx={{
+//               display: "flex",
+//               alignItems: "center",
+//               gap: 3,
+//               mb: 3,
+//             }}
 //           >
 //             <Avatar
+//               src={profile.profileImage}
 //               sx={{
-//                 width: 75,
-//                 height: 75,
+//                 width: 110,
+//                 height: 110,
 //                 bgcolor: "#2563eb",
-//                 fontSize: 28,
+//                 fontSize: 40,
 //               }}
 //             >
-//               S
+//               {!profile.profileImage &&
+//                 profile.name?.charAt(0)?.toUpperCase()}
 //             </Avatar>
 
 //             <Box>
-//               <Typography variant="h6" fontWeight="bold">
-//                 Sourav Ghosh
+//               <Typography variant="h5" fontWeight="700">
+//                 {profile.name}
 //               </Typography>
 
-//               <Typography color="text.secondary">
-//                 MCA Student
-//               </Typography>
+//               <Chip
+//                 label={profile.qualification}
+//                 sx={{ mt: 1 }}
+//               />
 //             </Box>
 //           </Box>
 
-//           <Grid container spacing={3}>
-//             <Grid item xs={12} md={6}>
-//               <TextField
-//                 fullWidth
-//                 label="Full Name"
-//                 defaultValue="Sourav Ghosh"
-//               />
-//             </Grid>
+//           <Divider />
 
-//             <Grid item xs={12} md={6}>
-//               <TextField
-//                 fullWidth
-//                 label="Email"
-//                 defaultValue="sourav@example.com"
-//               />
-//             </Grid>
+//           {/* Basic Details */}
+//           <Typography
+//             variant="h6"
+//             fontWeight="700"
+//             sx={{ mt: 3, mb: 2 }}
+//           >
+//             Personal Information
+//           </Typography>
 
-//             <Grid item xs={12} md={6}>
-//               <TextField
-//                 fullWidth
-//                 label="Phone"
-//                 defaultValue="+91 XXXXX XXXXX"
-//               />
-//             </Grid>
+//           <Stack spacing={2}>
+//             <Box sx={{ display: "flex", gap: 2 }}>
+//               <Email color="primary" />
 
-//             <Grid item xs={12} md={6}>
-//               <TextField
-//                 fullWidth
-//                 label="Course"
-//                 defaultValue="MCA"
-//               />
-//             </Grid>
+//               <Box>
+//                 <Typography
+//                   variant="body2"
+//                   color="text.secondary"
+//                 >
+//                   Email
+//                 </Typography>
 
-//             <Grid item xs={12} md={6}>
-//               <TextField
-//                 fullWidth
-//                 label="College"
-//                 defaultValue="Techno Main Salt Lake"
-//               />
-//             </Grid>
+//                 <Typography fontWeight="600">
+//                   {profile.email}
+//                 </Typography>
+//               </Box>
+//             </Box>
 
-//             <Grid item xs={12} md={6}>
-//               <TextField
-//                 fullWidth
-//                 label="CGPA"
-//                 defaultValue="7.70"
-//               />
-//             </Grid>
+//             <Box sx={{ display: "flex", gap: 2 }}>
+//               <Phone color="primary" />
 
-//             <Grid item xs={12}>
-//               <TextField
-//                 fullWidth
-//                 label="Skills"
-//                 defaultValue="React, JavaScript, Node.js, Express.js, MongoDB, Java"
-//               />
-//             </Grid>
-//           </Grid>
+//               <Box>
+//                 <Typography
+//                   variant="body2"
+//                   color="text.secondary"
+//                 >
+//                   Phone Number
+//                 </Typography>
 
-//           <Box mt={4}>
-//             <Button variant="contained">
-//               Save Changes
+//                 <Typography fontWeight="600">
+//                   {profile.number}
+//                 </Typography>
+//               </Box>
+//             </Box>
+
+//             <Box sx={{ display: "flex", gap: 2 }}>
+//               <School color="primary" />
+
+//               <Box>
+//                 <Typography
+//                   variant="body2"
+//                   color="text.secondary"
+//                 >
+//                   Current Qualification
+//                 </Typography>
+
+//                 <Typography fontWeight="600">
+//                   {profile.qualification}
+//                 </Typography>
+//               </Box>
+//             </Box>
+//           </Stack>
+
+//           <Divider sx={{ my: 3 }} />
+
+//           {/* Academic Details */}
+//           <Typography
+//             variant="h6"
+//             fontWeight="700"
+//             sx={{ mb: 2 }}
+//           >
+//             Academic Details
+//           </Typography>
+
+//           <Box
+//             sx={{
+//               display: "grid",
+//               gridTemplateColumns:
+//                 "repeat(auto-fit, minmax(180px, 1fr))",
+//               gap: 2,
+//             }}
+//           >
+//             <Card variant="outlined">
+//               <CardContent>
+//                 <Typography color="text.secondary">
+//                   10th Percentage
+//                 </Typography>
+
+//                 <Typography variant="h5" fontWeight="700">
+//                   {profile.tenth}
+//                 </Typography>
+//               </CardContent>
+//             </Card>
+
+//             <Card variant="outlined">
+//               <CardContent>
+//                 <Typography color="text.secondary">
+//                   12th Percentage
+//                 </Typography>
+
+//                 <Typography variant="h5" fontWeight="700">
+//                   {profile.twelfth}
+//                 </Typography>
+//               </CardContent>
+//             </Card>
+
+//             <Card variant="outlined">
+//               <CardContent>
+//                 <Typography color="text.secondary">
+//                   Current CGPA
+//                 </Typography>
+
+//                 <Typography variant="h5" fontWeight="700">
+//                   {profile.cgpa}
+//                 </Typography>
+//               </CardContent>
+//             </Card>
+//           </Box>
+
+//           {/* Graduation */}
+//           <Typography
+//             variant="h6"
+//             fontWeight="700"
+//             sx={{ mt: 4, mb: 2 }}
+//           >
+//             Graduation
+//           </Typography>
+
+//           <Card variant="outlined">
+//             <CardContent>
+//               <Typography fontWeight="700">
+//                 {profile.graduation.college}
+//               </Typography>
+
+//               <Typography color="text.secondary">
+//                 University: {profile.graduation.university}
+//               </Typography>
+
+//               <Typography sx={{ mt: 1 }}>
+//                 CGPA: <b>{profile.graduation.cgpa}</b>
+//               </Typography>
+//             </CardContent>
+//           </Card>
+
+//           {/* Post Graduation */}
+//           {profile.qualification === "MCA" ||
+//           profile.qualification === "M.Tech" ||
+//           profile.qualification === "MBA" ||
+//           profile.postGraduation?.college ? (
+//             <>
+//               <Typography
+//                 variant="h6"
+//                 fontWeight="700"
+//                 sx={{ mt: 4, mb: 2 }}
+//               >
+//                 Post Graduation
+//               </Typography>
+
+//               <Card variant="outlined">
+//                 <CardContent>
+//                   <Typography fontWeight="700">
+//                     {profile.postGraduation.college}
+//                   </Typography>
+
+//                   <Typography color="text.secondary">
+//                     University:{" "}
+//                     {profile.postGraduation.university}
+//                   </Typography>
+
+//                   <Typography sx={{ mt: 1 }}>
+//                     CGPA:{" "}
+//                     <b>{profile.postGraduation.cgpa}</b>
+//                   </Typography>
+//                 </CardContent>
+//               </Card>
+//             </>
+//           ) : null}
+
+//           {/* Resume */}
+//           <Typography
+//             variant="h6"
+//             fontWeight="700"
+//             sx={{ mt: 4, mb: 2 }}
+//           >
+//             Resume
+//           </Typography>
+
+//           <Card variant="outlined">
+//             <CardContent
+//               sx={{
+//                 display: "flex",
+//                 justifyContent: "space-between",
+//                 alignItems: "center",
+//               }}
+//             >
+//               <Box
+//                 sx={{
+//                   display: "flex",
+//                   alignItems: "center",
+//                   gap: 2,
+//                 }}
+//               >
+//                 <Description color="primary" />
+
+//                 <Typography>
+//                   {profile.resume
+//                     ? profile.resume.name
+//                     : "No resume uploaded"}
+//                 </Typography>
+//               </Box>
+
+//               <Button
+//                 variant="outlined"
+//                 startIcon={<Visibility />}
+//                 onClick={viewResume}
+//               >
+//                 View Resume
+//               </Button>
+//             </CardContent>
+//           </Card>
+
+//           {/* View Buttons */}
+//           <Box
+//             sx={{
+//               display: "flex",
+//               gap: 2,
+//               mt: 4,
+//               flexWrap: "wrap",
+//             }}
+//           >
+//             <Button
+//               variant="outlined"
+//               startIcon={<Visibility />}
+//               onClick={viewResume}
+//             >
+//               View Resume
+//             </Button>
+
+//             <Button
+//               variant="outlined"
+//               startIcon={<Visibility />}
+//               onClick={viewStudentDetails}
+//             >
+//               View Student Details
 //             </Button>
 //           </Box>
 //         </CardContent>
 //       </Card>
 
-//       <Card sx={{ borderRadius: 3, mt: 3 }}>
-//         <CardContent>
-//           <Typography variant="h6" fontWeight="bold">
-//             Resume
-//           </Typography>
-
-//           <Typography
-//             color="text.secondary"
-//             mt={1}
-//             mb={2}
-//           >
-//             Upload your latest resume.
-//           </Typography>
-
-//           <Button variant="outlined" component="label">
-//             Upload Resume
-//             <input hidden type="file" accept=".pdf,.doc,.docx" />
-//           </Button>
-//         </CardContent>
-//       </Card>
+//       {/* Edit Popup */}
+//       <EditProfileDialog
+//         open={openEdit}
+//         onClose={() => setOpenEdit(false)}
+//         profile={profile}
+//         onSave={handleSave}
+//       />
 //     </Box>
 //   );
-// }
+// };
 
 // export default Profile;
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Box,
@@ -166,54 +443,85 @@ import {
 
 import EditProfileDialog from "./EditProfileDialog";
 
+import {
+  defaultProfile,
+  getProfile,
+  saveProfile,
+} from "./ProfileStorage";
+
 const Profile = () => {
+  // Get logged-in student
   const loggedUser = JSON.parse(
-    localStorage.getItem("loggedUser")
+    localStorage.getItem("loggedUser") || "null"
   );
 
+  // Use student ID; if unavailable, use email
+  const userId = loggedUser?.id || loggedUser?.email;
+
   const [profile, setProfile] = useState({
-    profileImage: "",
-    name: loggedUser?.name || "Student Name",
-    email: loggedUser?.email || "student@gmail.com",
-    number: "9876543210",
-    qualification: "MCA",
-    
-    cgpa: "8.10",
-    tenth: "85%",
-    twelfth: "82%",
-
-    graduation: {
-      college: "Siliguri Institute of Technology",
-      university: "MAKAUT",
-      cgpa: "8.10",
-    },
-
-    postGraduation: {
-      college: "Techno Main Salt Lake",
-      university: "MAKAUT",
-      cgpa: "8.20",
-    },
-
-    resume: null,
+    ...defaultProfile,
+    name: loggedUser?.name || "",
+    email: loggedUser?.email || "",
   });
 
   const [openEdit, setOpenEdit] = useState(false);
 
+  // Load saved profile when page opens
+  useEffect(() => {
+    if (!userId) return;
+
+    const savedProfile = getProfile(userId);
+
+    if (savedProfile) {
+      setProfile({
+        ...defaultProfile,
+        ...savedProfile,
+
+        graduation: {
+          ...defaultProfile.graduation,
+          ...savedProfile.graduation,
+        },
+
+        postGraduation: {
+          ...defaultProfile.postGraduation,
+          ...savedProfile.postGraduation,
+        },
+      });
+    }
+  }, [userId]);
+
+  // Save updated profile
   const handleSave = (updatedProfile) => {
-    setProfile(updatedProfile);
-    setOpenEdit(false);
+    try {
+      const savedProfile = saveProfile(userId, updatedProfile);
+
+      setProfile(savedProfile);
+      setOpenEdit(false);
+
+      alert("Profile saved successfully!");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
+  // View uploaded resume
   const viewResume = () => {
-    if (!profile.resume) {
+    if (!profile.resume?.data) {
       alert("Resume not uploaded yet.");
       return;
     }
 
-    const resumeUrl = URL.createObjectURL(profile.resume);
-    window.open(resumeUrl, "_blank");
+    const resumeWindow = window.open("", "_blank");
+
+    if (!resumeWindow) {
+      alert("Please allow pop-ups to view your resume.");
+      return;
+    }
+
+    resumeWindow.location.href = profile.resume.data;
   };
 
+  // View student details
   const viewStudentDetails = () => {
     alert(
       `Student Details
@@ -222,9 +530,18 @@ Name: ${profile.name}
 Email: ${profile.email}
 Phone: ${profile.number}
 Qualification: ${profile.qualification}
+
 CGPA: ${profile.cgpa}
 10th: ${profile.tenth}
-12th: ${profile.twelfth}`
+12th: ${profile.twelfth}
+
+Graduation College: ${profile.graduation.college}
+Graduation University: ${profile.graduation.university}
+Graduation CGPA: ${profile.graduation.cgpa}
+
+Post Graduation College: ${profile.postGraduation.college}
+Post Graduation University: ${profile.postGraduation.university}
+Post Graduation CGPA: ${profile.postGraduation.cgpa}`
     );
   };
 
@@ -237,6 +554,8 @@ CGPA: ${profile.cgpa}
           justifyContent: "space-between",
           alignItems: "center",
           mb: 3,
+          flexWrap: "wrap",
+          gap: 2,
         }}
       >
         <Box>
@@ -265,7 +584,7 @@ CGPA: ${profile.cgpa}
           boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
         }}
       >
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
           {/* Profile Top */}
           <Box
             sx={{
@@ -273,10 +592,11 @@ CGPA: ${profile.cgpa}
               alignItems: "center",
               gap: 3,
               mb: 3,
+              flexWrap: "wrap",
             }}
           >
             <Avatar
-              src={profile.profileImage}
+              src={profile.profileImage?.data || ""}
               sx={{
                 width: 110,
                 height: 110,
@@ -284,17 +604,17 @@ CGPA: ${profile.cgpa}
                 fontSize: 40,
               }}
             >
-              {!profile.profileImage &&
+              {!profile.profileImage?.data &&
                 profile.name?.charAt(0)?.toUpperCase()}
             </Avatar>
 
             <Box>
               <Typography variant="h5" fontWeight="700">
-                {profile.name}
+                {profile.name || "Student Name"}
               </Typography>
 
               <Chip
-                label={profile.qualification}
+                label={profile.qualification || "Qualification"}
                 sx={{ mt: 1 }}
               />
             </Box>
@@ -302,7 +622,7 @@ CGPA: ${profile.cgpa}
 
           <Divider />
 
-          {/* Basic Details */}
+          {/* Personal Information */}
           <Typography
             variant="h6"
             fontWeight="700"
@@ -316,15 +636,12 @@ CGPA: ${profile.cgpa}
               <Email color="primary" />
 
               <Box>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                >
+                <Typography variant="body2" color="text.secondary">
                   Email
                 </Typography>
 
                 <Typography fontWeight="600">
-                  {profile.email}
+                  {profile.email || "Not provided"}
                 </Typography>
               </Box>
             </Box>
@@ -333,15 +650,12 @@ CGPA: ${profile.cgpa}
               <Phone color="primary" />
 
               <Box>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                >
+                <Typography variant="body2" color="text.secondary">
                   Phone Number
                 </Typography>
 
                 <Typography fontWeight="600">
-                  {profile.number}
+                  {profile.number || "Not provided"}
                 </Typography>
               </Box>
             </Box>
@@ -350,10 +664,7 @@ CGPA: ${profile.cgpa}
               <School color="primary" />
 
               <Box>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                >
+                <Typography variant="body2" color="text.secondary">
                   Current Qualification
                 </Typography>
 
@@ -367,11 +678,7 @@ CGPA: ${profile.cgpa}
           <Divider sx={{ my: 3 }} />
 
           {/* Academic Details */}
-          <Typography
-            variant="h6"
-            fontWeight="700"
-            sx={{ mb: 2 }}
-          >
+          <Typography variant="h6" fontWeight="700" sx={{ mb: 2 }}>
             Academic Details
           </Typography>
 
@@ -390,7 +697,7 @@ CGPA: ${profile.cgpa}
                 </Typography>
 
                 <Typography variant="h5" fontWeight="700">
-                  {profile.tenth}
+                  {profile.tenth || "Not provided"}
                 </Typography>
               </CardContent>
             </Card>
@@ -402,7 +709,7 @@ CGPA: ${profile.cgpa}
                 </Typography>
 
                 <Typography variant="h5" fontWeight="700">
-                  {profile.twelfth}
+                  {profile.twelfth || "Not provided"}
                 </Typography>
               </CardContent>
             </Card>
@@ -414,7 +721,7 @@ CGPA: ${profile.cgpa}
                 </Typography>
 
                 <Typography variant="h5" fontWeight="700">
-                  {profile.cgpa}
+                  {profile.cgpa || "Not provided"}
                 </Typography>
               </CardContent>
             </Card>
@@ -432,24 +739,23 @@ CGPA: ${profile.cgpa}
           <Card variant="outlined">
             <CardContent>
               <Typography fontWeight="700">
-                {profile.graduation.college}
+                {profile.graduation?.college || "College not provided"}
               </Typography>
 
               <Typography color="text.secondary">
-                University: {profile.graduation.university}
+                University:{" "}
+                {profile.graduation?.university || "Not provided"}
               </Typography>
 
               <Typography sx={{ mt: 1 }}>
-                CGPA: <b>{profile.graduation.cgpa}</b>
+                CGPA:{" "}
+                <b>{profile.graduation?.cgpa || "Not provided"}</b>
               </Typography>
             </CardContent>
           </Card>
 
           {/* Post Graduation */}
-          {profile.qualification === "MCA" ||
-          profile.qualification === "M.Tech" ||
-          profile.qualification === "MBA" ||
-          profile.postGraduation?.college ? (
+          {["MCA", "M.Tech", "MBA"].includes(profile.qualification) && (
             <>
               <Typography
                 variant="h6"
@@ -462,22 +768,24 @@ CGPA: ${profile.cgpa}
               <Card variant="outlined">
                 <CardContent>
                   <Typography fontWeight="700">
-                    {profile.postGraduation.college}
+                    {profile.postGraduation?.college || "College not provided"}
                   </Typography>
 
                   <Typography color="text.secondary">
                     University:{" "}
-                    {profile.postGraduation.university}
+                    {profile.postGraduation?.university || "Not provided"}
                   </Typography>
 
                   <Typography sx={{ mt: 1 }}>
                     CGPA:{" "}
-                    <b>{profile.postGraduation.cgpa}</b>
+                    <b>
+                      {profile.postGraduation?.cgpa || "Not provided"}
+                    </b>
                   </Typography>
                 </CardContent>
               </Card>
             </>
-          ) : null}
+          )}
 
           {/* Resume */}
           <Typography
@@ -494,21 +802,15 @@ CGPA: ${profile.cgpa}
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                flexWrap: "wrap",
+                gap: 2,
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Description color="primary" />
 
                 <Typography>
-                  {profile.resume
-                    ? profile.resume.name
-                    : "No resume uploaded"}
+                  {profile.resume?.name || "No resume uploaded"}
                 </Typography>
               </Box>
 
@@ -516,6 +818,7 @@ CGPA: ${profile.cgpa}
                 variant="outlined"
                 startIcon={<Visibility />}
                 onClick={viewResume}
+                disabled={!profile.resume?.data}
               >
                 View Resume
               </Button>
@@ -534,14 +837,6 @@ CGPA: ${profile.cgpa}
             <Button
               variant="outlined"
               startIcon={<Visibility />}
-              onClick={viewResume}
-            >
-              View Resume
-            </Button>
-
-            <Button
-              variant="outlined"
-              startIcon={<Visibility />}
               onClick={viewStudentDetails}
             >
               View Student Details
@@ -550,7 +845,7 @@ CGPA: ${profile.cgpa}
         </CardContent>
       </Card>
 
-      {/* Edit Popup */}
+      {/* Edit Profile Dialog */}
       <EditProfileDialog
         open={openEdit}
         onClose={() => setOpenEdit(false)}
@@ -562,5 +857,4 @@ CGPA: ${profile.cgpa}
 };
 
 export default Profile;
-
 

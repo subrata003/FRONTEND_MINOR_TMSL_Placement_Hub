@@ -38,7 +38,7 @@ const AdminSidebar = () => {
       icon: <Dashboard />,
     },
     {
-      name: "Manage Students",
+      name: "ManageStudent",
       path: "/admin/students",
       icon: <People />,
     },

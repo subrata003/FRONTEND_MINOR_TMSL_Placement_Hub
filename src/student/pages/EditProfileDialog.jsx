@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 
 import {
   Dialog,
@@ -16,6 +17,9 @@ import {
   MenuItem,
   Divider,
 } from "@mui/material";
+import { convertFileToBase64 } from "./ProfileStorage";
+
+
 
 const EditProfileDialog = ({
   open,
@@ -24,7 +28,30 @@ const EditProfileDialog = ({
   onSave,
 }) => {
   const [formData, setFormData] = useState(profile);
+  const [uploading, setUploading] = useState(false);
 
+  // Update form whenever dialog opens
+  useEffect(() => {
+    if (open) {
+      setFormData({
+        ...profile,
+        graduation: {
+          college: "",
+          university: "",
+          cgpa: "",
+          ...profile.graduation,
+        },
+        postGraduation: {
+          college: "",
+          university: "",
+          cgpa: "",
+          ...profile.postGraduation,
+        },
+      });
+    }
+  }, [open, profile]);
+
+  // Handle normal input fields
   const handleChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -32,6 +59,7 @@ const EditProfileDialog = ({
     }));
   };
 
+  // Handle graduation fields
   const handleGraduationChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -42,10 +70,8 @@ const EditProfileDialog = ({
     }));
   };
 
-  const handlePostGraduationChange = (
-    field,
-    value
-  ) => {
+  // Handle post-graduation fields
+  const handlePostGraduationChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
       postGraduation: {
@@ -55,28 +81,77 @@ const EditProfileDialog = ({
     }));
   };
 
-  // Profile Image
-  const handleProfileImage = (event) => {
-    const file = event.target.files[0];
+  // Upload profile image
+  const handleProfileImage = async (event) => {
+    const file = event.target.files?.[0];
 
     if (!file) return;
 
-    const imageUrl = URL.createObjectURL(file);
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image.");
+      event.target.value = "";
+      return;
+    }
 
-    handleChange("profileImage", imageUrl);
+    if (file.size > 1024 * 1024) {
+      alert("Profile image must be smaller than 1 MB.");
+      event.target.value = "";
+      return;
+    }
+
+    try {
+      const image = await convertFileToBase64(file);
+      handleChange("profileImage", image);
+    } catch (error) {
+      alert(error.message);
+    }
+
+    event.target.value = "";
   };
 
-  // Resume
-  const handleResume = (event) => {
-    const file = event.target.files[0];
+  // Upload resume
+  const handleResume = async (event) => {
+    const file = event.target.files?.[0];
 
     if (!file) return;
 
-    handleChange("resume", file);
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("Please upload a PDF, DOC, or DOCX file.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Resume must be smaller than 2 MB.");
+      event.target.value = "";
+      return;
+    }
+
+    try {
+      const resume = await convertFileToBase64(file);
+      handleChange("resume", resume);
+    } catch (error) {
+      alert(error.message);
+    }
+
+    event.target.value = "";
   };
 
-  const saveProfile = () => {
-    onSave(formData);
+  // Save profile
+  const handleSave = async () => {
+    setUploading(true);
+
+    try {
+      await onSave(formData);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -87,10 +162,7 @@ const EditProfileDialog = ({
       maxWidth="md"
     >
       <DialogTitle>
-        <Typography
-          variant="h5"
-          fontWeight="700"
-        >
+        <Typography variant="h5" fontWeight="700">
           Edit Profile
         </Typography>
 
@@ -105,11 +177,7 @@ const EditProfileDialog = ({
 
       <DialogContent dividers>
         {/* Profile Image */}
-        <Typography
-          variant="h6"
-          fontWeight="700"
-          sx={{ mb: 2 }}
-        >
+        <Typography variant="h6" fontWeight="700" sx={{ mb: 2 }}>
           Profile Image
         </Typography>
 
@@ -119,10 +187,11 @@ const EditProfileDialog = ({
             alignItems: "center",
             gap: 3,
             mb: 3,
+            flexWrap: "wrap",
           }}
         >
           <Avatar
-            src={formData.profileImage}
+            src={formData.profileImage?.data || ""}
             sx={{
               width: 90,
               height: 90,
@@ -130,14 +199,11 @@ const EditProfileDialog = ({
               fontSize: 30,
             }}
           >
-            {!formData.profileImage &&
+            {!formData.profileImage?.data &&
               formData.name?.charAt(0)?.toUpperCase()}
           </Avatar>
 
-          <Button
-            variant="outlined"
-            component="label"
-          >
+          <Button variant="outlined" component="label">
             Change Image
 
             <input
@@ -152,213 +218,147 @@ const EditProfileDialog = ({
         <Divider sx={{ mb: 3 }} />
 
         {/* Personal Details */}
-        <Typography
-          variant="h6"
-          fontWeight="700"
-          sx={{ mb: 2 }}
-        >
+        <Typography variant="h6" fontWeight="700" sx={{ mb: 2 }}>
           Personal Details
         </Typography>
 
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns:
-              "repeat(2, 1fr)",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+            },
             gap: 2,
           }}
         >
           <TextField
             label="Full Name"
-            value={formData.name}
-            onChange={(e) =>
-              handleChange(
-                "name",
-                e.target.value
-              )
-            }
+            value={formData.name || ""}
+            onChange={(e) => handleChange("name", e.target.value)}
             fullWidth
           />
 
           <TextField
             label="Email ID"
             type="email"
-            value={formData.email}
-            onChange={(e) =>
-              handleChange(
-                "email",
-                e.target.value
-              )
-            }
+            value={formData.email || ""}
+            onChange={(e) => handleChange("email", e.target.value)}
             fullWidth
           />
 
           <TextField
             label="Phone Number"
-            value={formData.number}
-            onChange={(e) =>
-              handleChange(
-                "number",
-                e.target.value
-              )
-            }
+            value={formData.number || ""}
+            onChange={(e) => handleChange("number", e.target.value)}
             fullWidth
           />
 
           <FormControl fullWidth>
-            <InputLabel>
-              Current Qualification
-            </InputLabel>
+            <InputLabel>Current Qualification</InputLabel>
 
             <Select
-              value={formData.qualification}
+              value={formData.qualification || "MCA"}
               label="Current Qualification"
               onChange={(e) =>
-                handleChange(
-                  "qualification",
-                  e.target.value
-                )
+                handleChange("qualification", e.target.value)
               }
             >
-              <MenuItem value="BCA">
-                BCA
-              </MenuItem>
-
-              <MenuItem value="B.Tech">
-                B.Tech
-              </MenuItem>
-
-              <MenuItem value="MCA">
-                MCA
-              </MenuItem>
-
-              <MenuItem value="M.Tech">
-                M.Tech
-              </MenuItem>
-
-              <MenuItem value="MBA">
-                MBA
-              </MenuItem>
+              <MenuItem value="BCA">BCA</MenuItem>
+              <MenuItem value="B.Tech">B.Tech</MenuItem>
+              <MenuItem value="MCA">MCA</MenuItem>
+              <MenuItem value="M.Tech">M.Tech</MenuItem>
+              <MenuItem value="MBA">MBA</MenuItem>
             </Select>
           </FormControl>
         </Box>
 
         <Divider sx={{ my: 3 }} />
 
-        {/* Academic */}
-        <Typography
-          variant="h6"
-          fontWeight="700"
-          sx={{ mb: 2 }}
-        >
+        {/* Academic Details */}
+        <Typography variant="h6" fontWeight="700" sx={{ mb: 2 }}>
           Academic Details
         </Typography>
 
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns:
-              "repeat(3, 1fr)",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(3, 1fr)",
+            },
             gap: 2,
           }}
         >
           <TextField
             label="10th Percentage"
-            value={formData.tenth}
-            onChange={(e) =>
-              handleChange(
-                "tenth",
-                e.target.value
-              )
-            }
+            value={formData.tenth || ""}
+            onChange={(e) => handleChange("tenth", e.target.value)}
+            fullWidth
           />
 
           <TextField
             label="12th Percentage"
-            value={formData.twelfth}
-            onChange={(e) =>
-              handleChange(
-                "twelfth",
-                e.target.value
-              )
-            }
+            value={formData.twelfth || ""}
+            onChange={(e) => handleChange("twelfth", e.target.value)}
+            fullWidth
           />
 
           <TextField
             label="Current CGPA"
-            value={formData.cgpa}
-            onChange={(e) =>
-              handleChange(
-                "cgpa",
-                e.target.value
-              )
-            }
+            value={formData.cgpa || ""}
+            onChange={(e) => handleChange("cgpa", e.target.value)}
+            fullWidth
           />
         </Box>
 
         <Divider sx={{ my: 3 }} />
 
-        {/* Graduation */}
-        <Typography
-          variant="h6"
-          fontWeight="700"
-          sx={{ mb: 2 }}
-        >
+        {/* Graduation Details */}
+        <Typography variant="h6" fontWeight="700" sx={{ mb: 2 }}>
           Graduation Details
         </Typography>
 
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns:
-              "repeat(3, 1fr)",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(3, 1fr)",
+            },
             gap: 2,
           }}
         >
           <TextField
             label="College Name"
-            value={
-              formData.graduation.college
-            }
+            value={formData.graduation?.college || ""}
             onChange={(e) =>
-              handleGraduationChange(
-                "college",
-                e.target.value
-              )
+              handleGraduationChange("college", e.target.value)
             }
+            fullWidth
           />
 
           <TextField
             label="University Name"
-            value={
-              formData.graduation.university
-            }
+            value={formData.graduation?.university || ""}
             onChange={(e) =>
-              handleGraduationChange(
-                "university",
-                e.target.value
-              )
+              handleGraduationChange("university", e.target.value)
             }
+            fullWidth
           />
 
           <TextField
             label="CGPA"
-            value={
-              formData.graduation.cgpa
-            }
+            value={formData.graduation?.cgpa || ""}
             onChange={(e) =>
-              handleGraduationChange(
-                "cgpa",
-                e.target.value
-              )
+              handleGraduationChange("cgpa", e.target.value)
             }
+            fullWidth
           />
         </Box>
 
-        {/* Post Graduation */}
-        {formData.qualification === "MCA" ||
-        formData.qualification === "M.Tech" ||
-        formData.qualification === "MBA" ? (
+        {/* Post Graduation Details */}
+        {["MCA", "M.Tech", "MBA"].includes(formData.qualification) && (
           <>
             <Typography
               variant="h6"
@@ -371,71 +371,51 @@ const EditProfileDialog = ({
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns:
-                  "repeat(3, 1fr)",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(3, 1fr)",
+                },
                 gap: 2,
               }}
             >
               <TextField
                 label="College Name"
-                value={
-                  formData.postGraduation
-                    .college
-                }
+                value={formData.postGraduation?.college || ""}
                 onChange={(e) =>
-                  handlePostGraduationChange(
-                    "college",
-                    e.target.value
-                  )
+                  handlePostGraduationChange("college", e.target.value)
                 }
+                fullWidth
               />
 
               <TextField
                 label="University Name"
-                value={
-                  formData.postGraduation
-                    .university
-                }
+                value={formData.postGraduation?.university || ""}
                 onChange={(e) =>
-                  handlePostGraduationChange(
-                    "university",
-                    e.target.value
-                  )
+                  handlePostGraduationChange("university", e.target.value)
                 }
+                fullWidth
               />
 
               <TextField
                 label="CGPA"
-                value={
-                  formData.postGraduation
-                    .cgpa
-                }
+                value={formData.postGraduation?.cgpa || ""}
                 onChange={(e) =>
-                  handlePostGraduationChange(
-                    "cgpa",
-                    e.target.value
-                  )
+                  handlePostGraduationChange("cgpa", e.target.value)
                 }
+                fullWidth
               />
             </Box>
           </>
-        ) : null}
+        )}
 
         <Divider sx={{ my: 3 }} />
 
         {/* Resume */}
-        <Typography
-          variant="h6"
-          fontWeight="700"
-          sx={{ mb: 2 }}
-        >
+        <Typography variant="h6" fontWeight="700" sx={{ mb: 2 }}>
           Resume
         </Typography>
 
-        <Button
-          variant="outlined"
-          component="label"
-        >
+        <Button variant="outlined" component="label">
           Upload Resume
 
           <input
@@ -446,29 +426,24 @@ const EditProfileDialog = ({
           />
         </Button>
 
-        {formData.resume && (
-          <Typography
-            sx={{ mt: 1 }}
-            color="text.secondary"
-          >
+        {formData.resume?.name && (
+          <Typography sx={{ mt: 1 }} color="text.secondary">
             Selected: {formData.resume.name}
           </Typography>
         )}
       </DialogContent>
 
       <DialogActions sx={{ p: 2 }}>
-        <Button
-          onClick={onClose}
-          color="inherit"
-        >
+        <Button onClick={onClose} color="inherit" disabled={uploading}>
           Cancel
         </Button>
 
         <Button
           variant="contained"
-          onClick={saveProfile}
+          onClick={handleSave}
+          disabled={uploading}
         >
-          Save Changes
+          {uploading ? "Saving..." : "Save Changes"}
         </Button>
       </DialogActions>
     </Dialog>
