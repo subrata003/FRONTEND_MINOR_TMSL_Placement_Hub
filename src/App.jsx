@@ -116,11 +116,13 @@ import Applications from "./student/pages/Applications";
 import Interviews from "./student/pages/Interviews";
 import Results from "./student/pages/Results";
 import Profile from "./student/pages/Profile";
+import Applyform from "./student/pages/Applyform"
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        
 
         {/* ================= LOGIN ================= */}
         <Route

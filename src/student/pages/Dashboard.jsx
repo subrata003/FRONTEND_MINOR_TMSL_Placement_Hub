@@ -1,10 +1,9 @@
 import React from 'react'
+import Applyform from './Applyform'
 
 const Dashboard = () => {
   return (
-    <div>
-      
-    </div>
+   <Applyform />
   )
 }
 
