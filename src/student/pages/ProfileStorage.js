@@ -38,6 +38,18 @@ export const getAllProfiles = () => {
     return {};
   }
 };
+export const getLoggedUserId = () => {
+  try {
+    const loggedUser = JSON.parse(
+      localStorage.getItem("loggedUser") || "null"
+    );
+
+    return loggedUser?.id || loggedUser?.email || null;
+  } catch (error) {
+    console.error("Error getting logged user:", error);
+    return null;
+  }
+};
 
 // Get profile of a particular student
 export const getProfile = (userId) => {
