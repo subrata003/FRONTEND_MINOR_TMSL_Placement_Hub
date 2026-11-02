@@ -9,6 +9,8 @@ import {
   MenuItem,
   Button,
   Grid,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import {
   Person,
@@ -36,19 +38,34 @@ const Applyform = () => {
     salary: "",
     coverLetter: "",
     remarks: "",
+    fatherName: "",
+    motherName: "",
+    location: "",
+    pincode: "",
+    district: "",
+    nationality: "",
+    
   };
 
   const [form, setForm] = useState(initialForm);
   const [resume, setResume] = useState(null);
+  const [graduationCompleted, setGraduationCompleted] = useState(false);
+  const [postGraduationCompleted, setPostGraduationCompleted] = useState(false);
+  const [photo, setPhoto] = useState(null);
+  const [signature, setSignature] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleReset = () => {
-    setForm(initialForm);
-    setResume(null);
-  };
+  setForm(initialForm);
+  setResume(null);
+  setPhoto(null);
+  setSignature(null);
+  setGraduationCompleted(false);
+  setPostGraduationCompleted(false);
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -71,25 +88,41 @@ const Applyform = () => {
         </Typography>
 
         <TextField
-          fullWidth
-          size="small"
-          name={item.name}
-          type={item.type || "text"}
-          value={form[item.name]}
-          onChange={handleChange}
-          placeholder={item.placeholder}
-          select={!!item.options}
-          required={item.required}
-          InputLabelProps={
-            item.type === "date" ? { shrink: true } : undefined
-          }
-        >
-          {item.options?.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </TextField>
+            fullWidth
+            size="small"
+            name={item.name}
+            type={item.type || "text"}
+            value={form[item.name]}
+            onChange={handleChange}
+            required={item.required}
+            select={!!item.options}
+            placeholder={item.placeholder}
+            slotProps={{
+                select: {
+                displayEmpty: true,
+                renderValue: (selected) =>
+                    selected ? (
+                    selected
+                    ) : (
+                    <span style={{ color: "#aaa" }}>
+                        {item.placeholder || `Select ${item.label}`}
+                    </span>
+                    ),
+                },
+            }}
+            sx={{
+                "& .MuiOutlinedInput-root": {
+                borderRadius: "9px",
+                backgroundColor: "#fff",
+                },
+            }}
+            >
+            {item.options?.map((option) => (
+                <MenuItem key={option} value={option}>
+                {option}
+                </MenuItem>
+            ))}
+            </TextField>
       </Grid>
     ));
 
@@ -157,26 +190,257 @@ const Applyform = () => {
             <Section icon={<Person fontSize="large" />} title="Personal Information">
               <Grid container spacing={3}>
                 {fields([
-                  { label: "Full Name", name: "fullName", placeholder: "Enter your full name", required: true },
+                  { label: "First Name", name: "firstName", placeholder: "Enter your first name", required: true },
+                  { label: "last Name", name: "lastName", placeholder: "Enter your last name", required: true },
                   { label: "Email Address", name: "email", type: "email", placeholder: "you@example.com", required: true },
-                  { label: "Phone Number", name: "phone", type: "tel", placeholder: "+91 98765 43210", required: true },
+                  { label: "Phone Number", name: "phone", type: "tel", placeholder: "+91 ", required: true },
                   { label: "Date of Birth", name: "dob", type: "date", required: true },
                   { label: "Gender", name: "gender", options: ["Male", "Female", "Other", "Prefer not to say"], required: true },
-                  { label: "Current Location", name: "location", placeholder: "Enter your city", required: true },
+                  
                 ])}
               </Grid>
+            </Section>
+            
+            {/* Family & Address Details */}
+            <Section
+            icon={<Person fontSize="large" />}
+            title="Family & Address Details"
+            >
+            <Grid container spacing={3}>
+                {fields([
+                {
+                    label: "Father's Name",
+                    name: "fatherName",
+                    placeholder: "Enter father's full name",
+                    required: true,
+                },
+                {
+                    label: "Mother's Name",
+                    name: "motherName",
+                    placeholder: "Enter mother's full name",
+                    required: true,
+                },
+                {
+                    label: "Location / City",
+                    name: "location",
+                    placeholder: "Enter your city",
+                    required: true,
+                },
+                {
+                    label: "PIN Code",
+                    name: "pincode",
+                    placeholder: "Enter 6-digit PIN code",
+                    required: true,
+                },
+                {
+                    label: "District",
+                    name: "district",
+                    placeholder: "Select District",
+                    options: [
+                    "Kolkata",
+                    "Howrah",
+                    "Hooghly",
+                    "North 24 Parganas",
+                    "South 24 Parganas",
+                    "Nadia",
+                    "Murshidabad",
+                    "Purba Medinipur",
+                    "Paschim Medinipur",
+                    "Darjeeling",
+                    "Jalpaiguri",
+                    "Bankura",
+                    "Birbhum",
+                    "Purulia",
+                    "Malda",
+                    "Cooch Behar",
+                    "Alipurduar",
+                    "Uttar Dinajpur",
+                    "Dakshin Dinajpur",
+                    "Jhargram",
+                    "Kalimpong",
+                    "Paschim Bardhaman",
+                    "Purba Bardhaman",
+                    ],
+                    required: true,
+                },
+                {
+                    label: "Nationality",
+                    name: "nationality",
+                    placeholder: "Select Nationality",
+                    options: [
+                    "Indian",
+                    "American",
+                    "British",
+                    "Canadian",
+                    "Australian",
+                    "Other",
+                    ],
+                    required: true,
+                },
+                ])}
+            </Grid>
             </Section>
 
-            {/* Educational Details */}
-            <Section icon={<School fontSize="large" />} title="Educational Details">
-              <Grid container spacing={3}>
-                {fields([
-                  { label: "Highest Qualification", name: "qualification", options: ["Higher Secondary", "Diploma", "BCA", "B.Tech", "B.Sc", "MCA", "M.Tech", "MBA", "Other"], required: true },
-                  { label: "University / Institute", name: "university", placeholder: "Enter university name", required: true },
-                  { label: "Passing Year", name: "passingYear", options: Array.from({ length: 15 }, (_, i) => String(new Date().getFullYear() - i)), required: true },
-                ])}
-              </Grid>
-            </Section>
+
+            
+        {/* Educational Details */}
+        <Section
+        icon={<School fontSize="large" />}
+        title="Educational Details"
+        >
+        {/* 10th Details */}
+        <Typography fontWeight={700} color="#5142C8" mb={2}>
+            10th Standard Details
+        </Typography>
+
+        <Grid container spacing={3}>
+            {fields([
+            {
+                label: "Board Name",
+                name: "tenthBoard",
+                placeholder: "e.g. WBBSE, CBSE, ICSE",
+                required: true,
+            },
+            {
+                label: "School Name",
+                name: "tenthSchool",
+                placeholder: "Enter school name",
+                required: true,
+            },
+            {
+                label: "Percentage / CGPA",
+                name: "tenthPercentage",
+                placeholder: "Enter percentage or CGPA",
+                required: true,
+            },
+            ])}
+        </Grid>
+
+        {/* 12th Details */}
+        <Typography fontWeight={700} color="#5142C8" mb={2} mt={4}>
+            12th Standard Details
+        </Typography>
+
+        <Grid container spacing={3}>
+            {fields([
+            {
+                label: "Board Name",
+                name: "twelfthBoard",
+                placeholder: "e.g. WBCHSE, CBSE, ISC",
+                required: true,
+            },
+            {
+                label: "School / College Name",
+                name: "twelfthSchool",
+                placeholder: "Enter school name ",
+                required: true,
+            },
+            {
+                label: "Percentage / CGPA",
+                name: "twelfthPercentage",
+                placeholder: "Enter percentage or CGPA",
+                required: true,
+            },
+            ])}
+        </Grid>
+
+        {/* Graduation */}
+        <Box mt={4}>
+            <FormControlLabel
+            control={
+                <Checkbox
+                checked={graduationCompleted}
+                onChange={(e) =>
+                    setGraduationCompleted(e.target.checked)
+                }
+                sx={{
+                    color: "#635BEB",
+                    "&.Mui-checked": { color: "#635BEB" },
+                }}
+                />
+            }
+            label={
+                <Typography fontWeight={700} color="#5142C8">
+                Graduation
+                </Typography>
+            }
+            />
+        </Box>
+
+        {graduationCompleted && (
+            <Grid container spacing={3} mt={0.5}>
+            {fields([
+                {
+                label: "Degree",
+                name: "graduationDegree",
+                placeholder: "e.g. BCA, B.Tech, B.Sc",
+                required: true,
+                },
+                {
+                label: "College / University Name",
+                name: "graduationCollege",
+                placeholder: "Enter college name",
+                required: true,
+                },
+                {
+                label: "Percentage / CGPA",
+                name: "graduationPercentage",
+                placeholder: "Enter percentage or CGPA",
+                required: true,
+                },
+            ])}
+            </Grid>
+        )}
+
+        {/* Post Graduation */}
+        <Box mt={3}>
+            <FormControlLabel
+            control={
+                <Checkbox
+                checked={postGraduationCompleted}
+                onChange={(e) =>
+                    setPostGraduationCompleted(e.target.checked)
+                }
+                sx={{
+                    color: "#635BEB",
+                    "&.Mui-checked": { color: "#635BEB" },
+                }}
+                />
+            }
+            label={
+                <Typography fontWeight={700} color="#5142C8">
+                 Post Graduation
+                </Typography>
+            }
+            />
+        </Box>
+
+        {postGraduationCompleted && (
+            <Grid container spacing={3} mt={0.5}>
+            {fields([
+                {
+                label: "Post Graduation Degree",
+                name: "postGraduationDegree",
+                placeholder: "e.g. MCA, M.Tech, MBA",
+                required: true,
+                },
+                {
+                label: "College / University Name",
+                name: "postGraduationCollege",
+                placeholder: "Enter college name",
+                required: true,
+                },
+                {
+                label: "Percentage / CGPA",
+                name: "postGraduationPercentage",
+                placeholder: "Enter percentage or CGPA",
+                required: true,
+                },
+            ])}
+    </Grid>
+    )}
+</Section>
+
 
             {/* Job Details */}
             <Section icon={<Work fontSize="large" />} title="Job Details">
@@ -189,40 +453,118 @@ const Applyform = () => {
               </Grid>
 
               {/* Resume Upload */}
-              <Box mt={3} maxWidth={370}>
-                <Typography fontWeight={600} fontSize={14} mb={1}>
-                  Resume <span style={{ color: "red" }}>*</span>
-                </Typography>
 
-                <Button
-                  component="label"
-                  fullWidth
-                  variant="outlined"
-                  sx={{
-                    minHeight: 110,
-                    borderStyle: "dashed",
-                    borderWidth: 2,
-                    borderColor: "#CBD2E5",
-                    color: "#635BEB",
-                    textTransform: "none",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                  }}
-                >
-                  <CloudUpload fontSize="large" />
-                  {resume ? resume.name : "Upload your resume"}
-                  <Typography fontSize={12} color="text.secondary">
-                    PDF, DOC or DOCX
-                  </Typography>
-                  <input
-                    type="file"
-                    hidden
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => setResume(e.target.files[0] || null)}
-                  />
-                </Button>
-              </Box>
+                    {/* Resume Upload */}
+                    <Box mt={3} maxWidth={370}>
+
+                    {/* Resume */}
+                    <Typography fontWeight={600} fontSize={14} mb={1}>
+                        Resume <span style={{ color: "red" }}>*</span>
+                    </Typography>
+
+                    <Button
+                        component="label"
+                        fullWidth
+                        variant="outlined"
+                        sx={{
+                        minHeight: 110,
+                        borderStyle: "dashed",
+                        borderWidth: 2,
+                        borderColor: "#CBD2E5",
+                        color: "#635BEB",
+                        textTransform: "none",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        }}
+                    >
+                        <CloudUpload fontSize="large" />
+                        {resume ? resume.name : "Upload your resume"}
+                        <Typography fontSize={12} color="text.secondary">
+                        PDF, DOC or DOCX
+                        </Typography>
+                        <input
+                        type="file"
+                        hidden
+                        accept=".pdf,.doc,.docx"
+                        required
+                        onChange={(e) => setResume(e.target.files[0] || null)}
+                        />
+                    </Button>
+
+                    {/* Profile Photo */}
+                    <Typography fontWeight={600} fontSize={14} mb={1} mt={3}>
+                        Profile Photo <span style={{ color: "red" }}>*</span>
+                    </Typography>
+
+                    <Button
+                        component="label"
+                        fullWidth
+                        variant="outlined"
+                        sx={{
+                        minHeight: 110,
+                        borderStyle: "dashed",
+                        borderWidth: 2,
+                        borderColor: "#CBD2E5",
+                        color: "#635BEB",
+                        textTransform: "none",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        }}
+                    >
+                        <CloudUpload fontSize="large" />
+                        {photo ? photo.name : "Upload your photo"}
+                        <Typography fontSize={12} color="text.secondary">
+                        JPG or PNG
+                        </Typography>
+                        <input
+                        type="file"
+                        hidden
+                        accept="image/jpeg,image/png"
+                        required
+                        onChange={(e) => setPhoto(e.target.files[0] || null)}
+                        />
+                    </Button>
+
+                    {/* Signature */}
+                    <Typography fontWeight={600} fontSize={14} mb={1} mt={3}>
+                        Signature <span style={{ color: "red" }}>*</span>
+                    </Typography>
+
+                    <Button
+                        component="label"
+                        fullWidth
+                        variant="outlined"
+                        sx={{
+                        minHeight: 110,
+                        borderStyle: "dashed",
+                        borderWidth: 2,
+                        borderColor: "#CBD2E5",
+                        color: "#635BEB",
+                        textTransform: "none",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        }}
+                    >
+                        <CloudUpload fontSize="large" />
+                        {signature ? signature.name : "Upload your signature"}
+                        <Typography fontSize={12} color="text.secondary">
+                        JPG or PNG
+                        </Typography>
+                        <input
+                        type="file"
+                        hidden
+                        accept="image/jpeg,image/png"
+                        required
+                        onChange={(e) => setSignature(e.target.files[0] || null)}
+                        />
+                    </Button>
+
+                    </Box>
+
+
             </Section>
 
             {/* Additional Information */}
