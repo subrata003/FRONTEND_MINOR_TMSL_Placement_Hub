@@ -1008,7 +1008,7 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      <Eligibility profile={profile} />
+            
 
       <EditProfileDialog open={openEdit} onClose={() => setOpenEdit(false)} profile={profile} onSave={handleSave} />
     </Box>

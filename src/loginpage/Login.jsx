@@ -231,3 +231,286 @@ const Login = () => {
 };
 
 export default Login;
+
+// import { useState } from "react";
+
+// import {
+//   Box,
+//   Card,
+//   CardContent,
+//   TextField,
+//   Button,
+//   Typography,
+//   InputAdornment,
+//   IconButton,
+//   Alert,
+//   Divider,
+// } from "@mui/material";
+
+// import {
+//   Email,
+//   Lock,
+//   Visibility,
+//   VisibilityOff,
+//   School,
+// } from "@mui/icons-material";
+
+// import { useNavigate } from "react-router-dom";
+
+// const Login = () => {
+//   const navigate = useNavigate();
+
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [error, setError] = useState("");
+//   const [loading, setLoading] = useState(false);
+
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+
+//     setError("");
+
+//     if (!email.trim() || !password) {
+//       setError("Please enter email and password");
+//       return;
+//     }
+
+//     try {
+//       setLoading(true);
+
+//       const response = await fetch(
+//         "http://localhost:8080/api/auth/login",
+//         {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify({
+//             email: email.trim().toLowerCase(),
+//             password: password,
+//           }),
+//         }
+//       );
+
+//       const data = await response.json();
+
+//       if (!response.ok) {
+//         setError(
+//           data.message || data.error || "Invalid email or password"
+//         );
+//         return;
+//       }
+
+//       // Get user details from API response
+//       const user = data.user || data;
+
+//       // Store logged-in user
+//       localStorage.setItem(
+//         "loggedUser",
+//         JSON.stringify(user)
+//       );
+
+//       // Store token if backend returns JWT
+//       if (data.token) {
+//         localStorage.setItem("token", data.token);
+//       }
+
+//       // Role-based navigation
+//       const role = user.role?.toLowerCase();
+
+//       if (role === "admin") {
+//         navigate("/admin/dashboard");
+//       } else if (role === "student") {
+//         navigate("/student/dashboard");
+//       } else {
+//         setError("Invalid user role received from server");
+//         localStorage.removeItem("loggedUser");
+//         localStorage.removeItem("token");
+//       }
+
+//     } catch (err) {
+//       console.error("Login API Error:", err);
+
+//       setError(
+//         "Server not responding. Please try again."
+//       );
+
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <Box
+//       sx={{
+//         minHeight: "100vh",
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center",
+//         background:
+//           "linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%)",
+//         px: 2,
+//       }}
+//     >
+//       <Card
+//         sx={{
+//           width: "100%",
+//           maxWidth: 430,
+//           borderRadius: 4,
+//           boxShadow: "0 15px 40px rgba(0,0,0,0.10)",
+//         }}
+//       >
+//         <CardContent sx={{ p: 4 }}>
+
+//           {/* Logo */}
+//           <Box
+//             sx={{
+//               display: "flex",
+//               justifyContent: "center",
+//               mb: 2,
+//             }}
+//           >
+//             <Box
+//               sx={{
+//                 width: 65,
+//                 height: 65,
+//                 borderRadius: 3,
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//                 background: "#2563eb",
+//                 color: "white",
+//               }}
+//             >
+//               <School sx={{ fontSize: 38 }} />
+//             </Box>
+//           </Box>
+
+//           <Typography
+//             variant="h4"
+//             fontWeight="700"
+//             textAlign="center"
+//           >
+//             Placement Hub
+//           </Typography>
+
+//           <Typography
+//             color="text.secondary"
+//             textAlign="center"
+//             sx={{ mt: 1, mb: 3 }}
+//           >
+//             Login to your account
+//           </Typography>
+
+//           {error && (
+//             <Alert severity="error" sx={{ mb: 2 }}>
+//               {error}
+//             </Alert>
+//           )}
+
+//           <Box component="form" onSubmit={handleLogin}>
+
+//             {/* Email */}
+//             <TextField
+//               fullWidth
+//               label="Email Address"
+//               type="email"
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               margin="normal"
+//               required
+//               InputProps={{
+//                 startAdornment: (
+//                   <InputAdornment position="start">
+//                     <Email />
+//                   </InputAdornment>
+//                 ),
+//               }}
+//             />
+
+//             {/* Password */}
+//             <TextField
+//               fullWidth
+//               label="Password"
+//               type={showPassword ? "text" : "password"}
+//               value={password}
+//               onChange={(e) => setPassword(e.target.value)}
+//               margin="normal"
+//               required
+//               InputProps={{
+//                 startAdornment: (
+//                   <InputAdornment position="start">
+//                     <Lock />
+//                   </InputAdornment>
+//                 ),
+//                 endAdornment: (
+//                   <InputAdornment position="end">
+//                     <IconButton
+//                       type="button"
+//                       onClick={() =>
+//                         setShowPassword(!showPassword)
+//                       }
+//                     >
+//                       {showPassword ? (
+//                         <VisibilityOff />
+//                       ) : (
+//                         <Visibility />
+//                       )}
+//                     </IconButton>
+//                   </InputAdornment>
+//                 ),
+//               }}
+//             />
+
+//             {/* Login Button */}
+//             <Button
+//               type="submit"
+//               fullWidth
+//               variant="contained"
+//               size="large"
+//               disabled={loading}
+//               sx={{
+//                 mt: 3,
+//                 py: 1.4,
+//                 borderRadius: 2,
+//                 textTransform: "none",
+//                 fontSize: 16,
+//                 fontWeight: 600,
+//               }}
+//             >
+//               {loading ? "Logging in..." : "Login"}
+//             </Button>
+
+//           </Box>
+
+//           <Divider sx={{ my: 3 }} />
+
+//           <Typography
+//             textAlign="center"
+//             color="text.secondary"
+//           >
+//             Don't have an account?
+//           </Typography>
+
+//           <Button
+//             fullWidth
+//             variant="outlined"
+//             onClick={() => navigate("/register")}
+//             sx={{
+//               mt: 1,
+//               textTransform: "none",
+//               borderRadius: 2,
+//             }}
+//           >
+//             Create Student Account
+//           </Button>
+
+//         </CardContent>
+//       </Card>
+//     </Box>
+//   );
+// };
+
+// export default Login;
