@@ -19,6 +19,13 @@ import {
   DialogActions,
   Divider,
   Avatar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 
 import {
@@ -247,306 +254,547 @@ const Results = () => {
         ))}
       </Box>
 
-      {/* PLACEMENT PROGRESS */}
-      <Card
-        elevation={0}
+      
+{/* PLACEMENT PROGRESS SECTION */}
+<Card
+  elevation={0}
+  sx={{
+    width: "100%",
+    borderRadius: "22px",
+    border: "1px solid #E5E7F5",
+    backgroundColor: "#FFFFFF",
+    boxShadow: "0 8px 25px rgba(99, 91, 235, 0.06)",
+    overflow: "hidden",
+  }}
+>
+  <CardContent
+    sx={{
+      p: { xs: 2.5, md: 4 },
+      "&:last-child": { pb: 4 },
+    }}
+  >
+
+    {/* HEADER */}
+    <Box
+      display="flex"
+      alignItems="center"
+      gap={2}
+      mb={4}
+    >
+      <Box
         sx={{
-          border: "1px solid #E5E7F0",
-          borderRadius: "15px",
-          mb: 3,
+          width: 64,
+          height: 64,
+          borderRadius: "17px",
+          background: "linear-gradient(135deg, #EFEDFF, #E5E2FF)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#635BEB",
         }}
       >
-        <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
+        <TrendingUp sx={{ fontSize: 36 }} />
+      </Box>
 
-          <Box display="flex" alignItems="center" gap={1.5} mb={3}>
-            <Avatar
-              sx={{
-                width: 44,
-                height: 44,
-                backgroundColor: "#EEF0FF",
-                color: "#635BEB",
-              }}
+      <Box>
+        <Typography
+          sx={{
+            fontSize: { xs: 18, md: 24 },
+            fontWeight: 750,
+            color: "#172554",
+          }}
+        >
+          Placement Progress
+        </Typography>
+
+        <Typography
+          sx={{
+            fontSize: 15,
+            color: "#64748B",
+            mt: 0.5,
+          }}
+        >
+          Your overall placement performance
+        </Typography>
+      </Box>
+    </Box>
+
+    {/* PROGRESS INFORMATION */}
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      mb={2}
+    >
+      <Box>
+        <Typography
+          fontSize={19}
+          fontWeight={700}
+          color="#172554"
+        >
+          Results Published
+        </Typography>
+
+        <Typography
+          fontSize={14}
+          color="#64748B"
+          mt={0.5}
+        >
+          Track your completed placement results
+        </Typography>
+      </Box>
+
+      <Box display="flex" alignItems="baseline" gap={0.8}>
+        <Typography
+          sx={{
+            fontSize: { xs: 32, md: 48 },
+            fontWeight: 800,
+            color: "#4F46E5",
+          }}
+        >
+          {published}
+        </Typography>
+
+        <Typography
+          fontSize={28}
+          fontWeight={600}
+          color="#94A3B8"
+        >
+          / {total}
+        </Typography>
+      </Box>
+    </Box>
+
+    {/* PROGRESS BAR */}
+    <LinearProgress
+      variant="determinate"
+      value={total > 0 ? (published / total) * 100 : 0}
+      sx={{
+        height: 14,
+        borderRadius: 10,
+        backgroundColor: "#E9EAF7",
+        mb: 3.5,
+        "& .MuiLinearProgress-bar": {
+          borderRadius: 10,
+          background: "linear-gradient(90deg, #635BEB, #8B80FF)",
+        },
+      }}
+    />
+
+    {/* STATUS CARDS */}
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "1fr",
+          sm: "repeat(3, 1fr)",
+        },
+        gap: 2.5,
+      }}
+    >
+      {[
+        {
+          title: "Published",
+          count: published,
+          icon: <CheckCircle sx={{ fontSize: 34 }} />,
+          color: "#16A34A",
+          background: "#F0FDF4",
+          border: "#BBF7D0",
+        },
+        {
+          title: "Pending",
+          count: pending,
+          icon: <Schedule sx={{ fontSize: 34 }} />,
+          color: "#F59E0B",
+          background: "#FFFBEB",
+          border: "#FDE68A",
+        },
+        {
+          title: "Rejected",
+          count: rejected,
+          icon: <Cancel sx={{ fontSize: 34 }} />,
+          color: "#DC2626",
+          background: "#FEF2F2",
+          border: "#FECACA",
+        },
+      ].map((item) => (
+        <Box
+          key={item.title}
+          sx={{
+            p: 3,
+            minHeight: 115,
+            borderRadius: "17px",
+            backgroundColor: item.background,
+            border: `1px solid ${item.border}`,
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            transition: "all 0.25s ease",
+
+            "&:hover": {
+              transform: "translateY(-4px)",
+              boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
+            },
+          }}
+        >
+          <Box
+            sx={{
+              width: 58,
+              height: 58,
+              minWidth: 58,
+              borderRadius: "50%",
+              backgroundColor: item.color,
+              color: "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {item.icon}
+          </Box>
+
+          <Box>
+            <Typography
+              fontSize={17}
+              fontWeight={700}
+              color={item.color}
+              mb={0.5}
             >
-              <TrendingUp />
-            </Avatar>
-
-            <Box>
-              <Typography fontSize={18} fontWeight={700} color="#172554">
-                Placement Progress
-              </Typography>
-
-              <Typography fontSize={13} color="#64748B">
-                Your overall placement performance
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={1}
-          >
-            <Typography fontSize={14} fontWeight={600} color="#475569">
-              Results Published
+              {item.title}
             </Typography>
 
-            <Typography fontSize={15} fontWeight={700} color="#16A34A">
-              {published} / {total}
+            <Typography
+              fontSize={28}
+              fontWeight={800}
+              color="#172554"
+            >
+              {String(item.count).padStart(2, "0")}
             </Typography>
           </Box>
+        </Box>
+      ))}
+    </Box>
 
-          <LinearProgress
-            variant="determinate"
-            value={total ? (published / total) * 100 : 0}
-            sx={{
-              height: 11,
-              borderRadius: 10,
-              backgroundColor: "#E9ECF4",
-              mb: 3,
-              "& .MuiLinearProgress-bar": {
-                backgroundColor: "#16A34A",
-                borderRadius: 10,
-              },
-            }}
-          />
+  </CardContent>
+</Card>
 
-          {/* PROGRESS STATUS */}
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "repeat(3, 1fr)",
-              },
-              gap: 2,
-            }}
-          >
-            {[
-              {
-                label: "Published",
-                count: published,
-                color: "#16A34A",
-                bg: "#DCFCE7",
-              },
-              {
-                label: "Pending",
-                count: pending,
-                color: "#D97706",
-                bg: "#FEF3C7",
-              },
-              {
-                label: "Rejected",
-                count: rejected,
-                color: "#DC2626",
-                bg: "#FEE2E2",
-              },
-            ].map((item) => (
-              <Box
-                key={item.label}
-                sx={{
-                  p: 2,
-                  borderRadius: "12px",
-                  backgroundColor: item.bg,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography
-                  fontSize={14}
-                  fontWeight={600}
-                  color={item.color}
-                >
-                  {item.label}
-                </Typography>
 
-                <Typography
-                  fontSize={19}
-                  fontWeight={700}
-                  color={item.color}
-                >
-                  {String(item.count).padStart(2, "0")}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
-        </CardContent>
-      </Card>
+     
+{/* COMPANY WISE RESULTS */}
+<Card
+  elevation={0}
+  sx={{
+    border: "1px solid #E5E7F0",
+    borderRadius: "18px",
+    backgroundColor: "#FFFFFF",
+    overflow: "hidden",
+  }}
+>
+  <CardContent sx={{ p: { xs: 2, md: 3 } }}>
 
-      {/* COMPANY WISE RESULTS */}
-      <Card
-        elevation={0}
+    {/* SECTION HEADER */}
+    <Box
+      display="flex"
+      alignItems="center"
+      gap={1.5}
+      mb={0.7}
+    >
+      <Box
         sx={{
-          border: "1px solid #E5E7F0",
-          borderRadius: "15px",
+          width: 42,
+          height: 42,
+          borderRadius: "12px",
+          backgroundColor: "#EEF0FF",
+          color: "#635BEB",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+        <Business fontSize="medium" />
+      </Box>
 
-          {/* SECTION HEADER */}
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems={{ xs: "flex-start", md: "center" }}
-            flexDirection={{ xs: "column", md: "row" }}
-            gap={2}
-            mb={3}
+      <Box>
+        <Typography
+          fontSize={19}
+          fontWeight={700}
+          color="#172554"
+        >
+          Company-wise Results
+        </Typography>
+
+        <Typography fontSize={13} color="#64748B">
+          Check company details and placement updates.
+        </Typography>
+      </Box>
+    </Box>
+
+    {/* SEARCH AND FILTER */}
+    <Box
+      display="flex"
+      gap={2}
+      flexWrap="wrap"
+      justifyContent="space-between"
+      alignItems="center"
+      my={3}
+    >
+      <TextField
+        size="small"
+        placeholder="Search company, role or location..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        sx={{
+          width: { xs: "100%", sm: 350 },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            backgroundColor: "#FAFBFF",
+          },
+        }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search sx={{ color: "#94A3B8" }} />
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      <TextField
+        select
+        size="small"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        sx={{
+          width: { xs: "100%", sm: 160 },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            backgroundColor: "#FAFBFF",
+          },
+        }}
+      >
+        <MenuItem value="All">All Companies</MenuItem>
+        <MenuItem value="Open">Open</MenuItem>
+        <MenuItem value="Closed">Closed</MenuItem>
+      </TextField>
+    </Box>
+
+    {/* COMPANY TABLE */}
+    <TableContainer
+      component={Paper}
+      elevation={0}
+      sx={{
+        borderRadius: "12px",
+        border: "1px solid #EDF0F7",
+        overflowX: "auto",
+      }}
+    >
+      <Table sx={{ minWidth: 750 }}>
+
+        {/* TABLE HEADER */}
+        <TableHead>
+          <TableRow
+            sx={{
+              backgroundColor: "#F5F6FC",
+              "& th": {
+                fontWeight: 700,
+                color: "#475569",
+                fontSize: 13,
+                py: 2,
+                whiteSpace: "nowrap",
+                borderBottom: "1px solid #E5E7F0",
+              },
+            }}
           >
-            <Box>
-              <Typography fontSize={19} fontWeight={700} color="#172554">
-                Company-wise Results
-              </Typography>
+            <TableCell>Company</TableCell>
+            <TableCell>Job Role</TableCell>
+            <TableCell>Package</TableCell>
+            <TableCell>Location</TableCell>
+            <TableCell>Drive Date</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell align="center">Action</TableCell>
+          </TableRow>
+        </TableHead>
 
-              <Typography fontSize={13} color="#64748B" mt={0.5}>
-                Check company details and placement updates.
-              </Typography>
-            </Box>
-
-            <Box
-              display="flex"
-              gap={1.5}
-              width={{ xs: "100%", md: "auto" }}
-            >
-              <TextField
-                size="small"
-                placeholder="Search company..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                sx={{ flex: 1, minWidth: 150 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search fontSize="small" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <TextField
-                select
-                size="small"
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                sx={{ minWidth: 120 }}
-              >
-                <MenuItem value="All">All</MenuItem>
-                <MenuItem value="Open">Open</MenuItem>
-                <MenuItem value="Closed">Closed</MenuItem>
-              </TextField>
-            </Box>
-          </Box>
-
-          {/* TABLE */}
-          <Box sx={{ overflowX: "auto" }}>
-            <Box sx={{ minWidth: 750 }}>
-
-              <Box
+        {/* TABLE BODY */}
+        <TableBody>
+          {filteredCompanies.length > 0 ? (
+            filteredCompanies.map((company) => (
+              <TableRow
+                key={company.id}
+                hover
                 sx={{
-                  display: "grid",
-                  gridTemplateColumns: "1.1fr 1.5fr 1fr 1fr 1.1fr 0.8fr",
-                  gap: 1,
-                  p: 2,
-                  backgroundColor: "#F7F8FC",
-                  borderRadius: "9px",
+                  transition: "0.2s",
+                  "&:hover": {
+                    backgroundColor: "#F8F9FF",
+                  },
+                  "& td": {
+                    py: 2,
+                    borderBottom: "1px solid #EDF0F7",
+                  },
                 }}
               >
-                {[
-                  "Company",
-                  "Job Role",
-                  "Package",
-                  "Location",
-                  "Drive Date",
-                  "Action",
-                ].map((heading) => (
-                  <Typography
-                    key={heading}
-                    fontSize={12}
-                    fontWeight={700}
-                    color="#475569"
+
+                {/* COMPANY */}
+                <TableCell>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    gap={1.5}
                   >
-                    {heading}
-                  </Typography>
-                ))}
-              </Box>
-
-              {filteredCompanies.map((company) => (
-                <Box
-                  key={company.id}
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: "1.1fr 1.5fr 1fr 1fr 1.1fr 0.8fr",
-                    gap: 1,
-                    alignItems: "center",
-                    p: 2,
-                    borderBottom: "1px solid #EEF0F5",
-                    "&:hover": {
-                      backgroundColor: "#FAFAFF",
-                    },
-                  }}
-                >
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Avatar
+                    <Box
                       sx={{
-                        width: 35,
-                        height: 35,
-                        borderRadius: "9px",
+                        width: 40,
+                        height: 40,
+                        borderRadius: "11px",
                         backgroundColor: "#EEF0FF",
                         color: "#635BEB",
-                        fontWeight: 700,
-                        fontSize: 15,
+                        fontSize: 17,
+                        fontWeight: 800,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       {company.logo}
-                    </Avatar>
+                    </Box>
 
-                    <Typography fontSize={13} fontWeight={700}>
+                    <Typography
+                      fontSize={14}
+                      fontWeight={700}
+                      color="#172554"
+                    >
                       {company.company}
                     </Typography>
                   </Box>
+                </TableCell>
 
-                  <Typography fontSize={12} color="#475569">
+                {/* ROLE */}
+                <TableCell>
+                  <Typography
+                    fontSize={13}
+                    fontWeight={500}
+                    color="#475569"
+                  >
                     {company.role}
                   </Typography>
+                </TableCell>
 
-                  <Typography fontSize={13} fontWeight={600}>
-                    {company.package}
-                  </Typography>
+                {/* PACKAGE */}
+                <TableCell>
+                  <Chip
+                    label={company.package}
+                    size="small"
+                    sx={{
+                      backgroundColor: "#F0FDF4",
+                      color: "#15803D",
+                      fontWeight: 700,
+                      borderRadius: "7px",
+                    }}
+                  />
+                </TableCell>
 
-                  <Typography fontSize={12} color="#64748B">
+                {/* LOCATION */}
+                <TableCell>
+                  <Typography fontSize={13} color="#475569">
                     {company.location}
                   </Typography>
+                </TableCell>
 
-                  <Typography fontSize={12} color="#64748B">
+                {/* DRIVE DATE */}
+                <TableCell>
+                  <Typography
+                    fontSize={13}
+                    color="#475569"
+                    whiteSpace="nowrap"
+                  >
                     {company.driveDate}
                   </Typography>
+                </TableCell>
 
+                {/* STATUS */}
+                <TableCell>
+                  <Chip
+                    label={company.status}
+                    size="small"
+                    color={company.status === "Open" ? "success" : "default"}
+                    sx={{
+                      fontWeight: 600,
+                      borderRadius: "7px",
+                    }}
+                  />
+                </TableCell>
+
+                {/* ACTION */}
+                <TableCell align="center">
                   <Button
                     size="small"
+                    variant="text"
                     startIcon={<Visibility />}
-                    onClick={() => setSelectedCompany(company)}
+                    onClick={() => handleViewCompany(company)}
                     sx={{
                       color: "#635BEB",
+                      fontWeight: 700,
                       textTransform: "none",
-                      fontWeight: 600,
+                      borderRadius: "8px",
+                      "&:hover": {
+                        backgroundColor: "#EEF0FF",
+                      },
                     }}
                   >
                     View
                   </Button>
-                </Box>
-              ))}
+                </TableCell>
 
-              {filteredCompanies.length === 0 && (
-                <Box textAlign="center" py={5}>
-                  <Typography color="text.secondary">
-                    No companies found.
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={7}>
+                <Box
+                  py={6}
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  gap={1}
+                >
+                  <Search sx={{ fontSize: 40, color: "#CBD5E1" }} />
+
+                  <Typography
+                    fontWeight={600}
+                    color="#475569"
+                  >
+                    No companies found
+                  </Typography>
+
+                  <Typography fontSize={13} color="#94A3B8">
+                    Try changing your search or filter.
                   </Typography>
                 </Box>
-              )}
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+
+      </Table>
+    </TableContainer>
+
+    {/* FOOTER */}
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      mt={2}
+      flexWrap="wrap"
+      gap={1}
+    >
+      <Typography fontSize={12} color="#94A3B8">
+        Showing {filteredCompanies.length} of {upcomingCompanies.length} companies
+      </Typography>
+    </Box>
+
+  </CardContent>
+</Card>
+
 
       {/* COMPANY DETAILS DIALOG */}
       <Dialog
